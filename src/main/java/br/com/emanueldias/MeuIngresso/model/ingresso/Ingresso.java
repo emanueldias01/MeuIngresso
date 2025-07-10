@@ -7,12 +7,12 @@ public class Ingresso {
     private String nomeIngresso;
     private Boolean disponivel;
     private BigDecimal valor;
-    private Integer eventoId;
+    private Long eventoId;
 
     public Ingresso() {
     }
 
-    public Ingresso(Long id, String nomeIngresso, Boolean disponivel, BigDecimal valor, Integer eventoId) {
+    public Ingresso(Long id, String nomeIngresso, Boolean disponivel, BigDecimal valor, Long eventoId) {
         this.id = id;
         this.nomeIngresso = nomeIngresso;
         this.disponivel = disponivel;
@@ -53,11 +53,11 @@ public class Ingresso {
         this.valor = valor;
     }
 
-    public Integer getEventoId() {
+    public Long getEventoId() {
         return eventoId;
     }
 
-    public void setEventoId(Integer eventoId) {
+    public void setEventoId(Long eventoId) {
         this.eventoId = eventoId;
     }
 }
