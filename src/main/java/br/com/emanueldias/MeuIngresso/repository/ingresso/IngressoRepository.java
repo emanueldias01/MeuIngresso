@@ -28,7 +28,7 @@ public class IngressoRepository extends RepositoryDefault implements IRepository
             PreparedStatement ps = this.conn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
 
-            while(rs.next()){
+            while (rs.next()){
                 Long id = rs.getLong(1);
                 String nome = rs.getString(2);
                 Boolean disponivel = rs.getBoolean(3);
@@ -64,7 +64,7 @@ public class IngressoRepository extends RepositoryDefault implements IRepository
             ps.setLong(1, id);
             ResultSet rs = ps.executeQuery();
 
-            while(rs.next()){
+            if (rs.next()){
                 return new Ingresso(
                         rs.getLong(1),
                         rs.getString(2),

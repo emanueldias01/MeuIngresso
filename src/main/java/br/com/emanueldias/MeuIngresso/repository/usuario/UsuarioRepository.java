@@ -56,19 +56,23 @@ public class UsuarioRepository extends RepositoryDefault implements IRepository<
     public Usuario findById(Long id) {
         String sql = "SELECT * FROM usuarios WHERE id = ?";
 
-        Usuario usuario = null;
         try{
             PreparedStatement ps = this.conn.prepareStatement(sql);
             ps.setLong(1, id);
             ResultSet rs = ps.executeQuery();
 
-            while(rs.next()){
+            if (rs.next()){
                 Long idUser = rs.getLong(1);
                 String username = rs.getString(2);
                 String email = rs.getString(3);
                 String password = rs.getString(4);
 
-                usuario = new Usuario(idUser, username, email, password);
+                return new Usuario(
+                        idUser,
+                        username,
+                        email,
+                        password
+                );
             }
 
             ps.close();
@@ -84,7 +88,7 @@ public class UsuarioRepository extends RepositoryDefault implements IRepository<
             }
         }
 
-        return usuario;
+        return null;
     }
 
     @Override
