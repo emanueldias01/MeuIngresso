@@ -1,5 +1,6 @@
 package br.com.emanueldias.MeuIngresso.config;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
@@ -14,6 +15,11 @@ import java.util.logging.Logger;
 
 @Configuration
 public class BeansConfig {
+
+    @Bean
+    public ModelMapper modelMapper(){
+        return new ModelMapper();
+    }
 
     @Bean
     public DataSource dataSource(){

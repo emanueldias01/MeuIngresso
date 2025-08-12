@@ -3,20 +3,23 @@ package br.com.emanueldias.MeuIngresso.repository.ingresso;
 import br.com.emanueldias.MeuIngresso.model.ingresso.Ingresso;
 import br.com.emanueldias.MeuIngresso.repository.IRepository;
 import br.com.emanueldias.MeuIngresso.repository.RepositoryDefault;
+import org.springframework.stereotype.Repository;
 
+import javax.sql.DataSource;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+@Repository
 public class IngressoRepository extends RepositoryDefault implements IRepository<Ingresso> {
 
-
-    public IngressoRepository(Connection connection) {
-        super(connection);
+    public IngressoRepository(DataSource dataSource) throws SQLException {
+        super(dataSource);
     }
 
     @Override
@@ -91,7 +94,7 @@ public class IngressoRepository extends RepositoryDefault implements IRepository
     }
 
     @Override
-    public void save(Ingresso entity) {
+    public Ingresso save(Ingresso entity) {
         String sql = "INSERT INTO ingressos(nome_ingresso, disponivel, valor, evento_id) VALUES(?, ?, ?, ?)";
 
         try{
@@ -103,6 +106,15 @@ public class IngressoRepository extends RepositoryDefault implements IRepository
 
             ps.execute();
             ps.close();
+
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                if (rs.next()) {
+                    long id = rs.getLong(1);
+                    return this.findById(id);
+                } else {
+                    throw new SQLException();
+                }
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }finally {
@@ -165,5 +177,42 @@ public class IngressoRepository extends RepositoryDefault implements IRepository
                 throw new RuntimeException(ex);
             }
         }
+    }
+
+    public List<Ingresso> getAllIngressosFromEventoId(Long id){
+        String sql = "SELECT * FROM ingressos WHERE evento_id = ?";
+
+        try{
+
+            Set<Ingresso> ingressos = new HashSet<>();
+            PreparedStatement ps = this.conn.prepareStatement(sql);
+            ps.setLong(1, id);
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()){
+                Long ingressoId = rs.getLong(1);
+                String nome = rs.getString(2);
+                Boolean disponivel = rs.getBoolean(3);
+                BigDecimal valor = rs.getBigDecimal(4);
+                Long eventoId = rs.getLong(5);
+
+                Ingresso ingresso = new Ingresso(ingressoId, nome, disponivel, valor, eventoId);
+                ingressos.add(ingresso);
+            }
+
+            ps.close();
+        }catch (SQLException e){
+            throw new RuntimeException(e);
+        }finally {
+            try{
+                if(this.conn != null && !this.conn.isClosed()){
+                    this.conn.close();
+                }
+            }catch (SQLException e){
+                throw new RuntimeException(e);
+            }
+        }
+
+        return null;
     }
 }
