@@ -112,7 +112,7 @@ public class EventoRepository extends RepositoryDefault implements IRepository<E
 
         try {
             conn = this.dataSource.getConnection();
-            PreparedStatement ps = conn.prepareStatement(sql);
+            PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
             Array sqlArray = conn.createArrayOf("VARCHAR", entity.getSetores().toArray());
             ps.setString(1, entity.getNome());
@@ -123,11 +123,12 @@ public class EventoRepository extends RepositoryDefault implements IRepository<E
             ps.setArray(6, sqlArray);
 
             ps.execute();
-            ps.close();
+
 
             try (ResultSet rs = ps.getGeneratedKeys()) {
                 if (rs.next()) {
                     long id = rs.getLong(1);
+                    ps.close();
                     return this.findById(id);
                 } else {
                     throw new SQLException();

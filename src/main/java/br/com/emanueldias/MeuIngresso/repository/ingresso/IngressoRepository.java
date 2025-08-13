@@ -7,10 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -104,7 +101,7 @@ public class IngressoRepository extends RepositoryDefault implements IRepository
 
         try{
             conn = this.dataSource.getConnection();
-            PreparedStatement ps = conn.prepareStatement(sql);
+            PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, entity.getNomeIngresso());
             ps.setBoolean(2, entity.getDisponivel());
             ps.setBigDecimal(3, entity.getValor());

@@ -2,12 +2,14 @@ package br.com.emanueldias.MeuIngresso.service.evento;
 
 import br.com.emanueldias.MeuIngresso.dto.evento.EventoRequestDTO;
 import br.com.emanueldias.MeuIngresso.dto.evento.EventoUpdateDTO;
+import br.com.emanueldias.MeuIngresso.exceptions.NotFoundElementException;
 import br.com.emanueldias.MeuIngresso.model.evento.Evento;
 import br.com.emanueldias.MeuIngresso.repository.evento.EventoRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 public class EventoService {
@@ -25,6 +27,10 @@ public class EventoService {
     }
 
     public Evento getEventoById(Long id){
+        Evento evento = this.eventoRepository.findById(id);
+        if(evento == null){
+            throw new NotFoundElementException("O evento com o ID fornecido não foi encontrado");
+        }
         return this.eventoRepository.findById(id);
     }
 
@@ -35,11 +41,13 @@ public class EventoService {
 
     public Evento updateEvento(Long id, EventoUpdateDTO dto){
         Evento uptated = modelMapper.map(dto, Evento.class);
+        if(this.eventoRepository.findById(id) == null) throw new NotFoundElementException("O evento com o ID fornecido não foi encontrado");
         Evento evento = eventoRepository.update(id, uptated);
         return evento;
     }
 
     public void deleteEventoById(Long id){
+        if(this.eventoRepository.findById(id) == null) throw new NotFoundElementException("O evento com o ID fornecido não foi encontrado");
         this.eventoRepository.deleteById(id);
     }
 }
