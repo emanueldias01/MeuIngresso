@@ -25,10 +25,12 @@ public class IngressoRepository extends RepositoryDefault implements IRepository
     @Override
     public Set<Ingresso> getAll() {
 
+        Connection conn = null;
         Set<Ingresso> ingressos = new HashSet<>();
         String sql = "SELECT * FROM ingressos";
         try{
-            PreparedStatement ps = this.conn.prepareStatement(sql);
+            conn = this.dataSource.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()){
@@ -47,8 +49,8 @@ public class IngressoRepository extends RepositoryDefault implements IRepository
             throw new RuntimeException(ex);
         }finally {
             try{
-                if(this.conn != null && !this.conn.isClosed()){
-                    this.conn.close();
+                if(conn != null && !conn.isClosed()){
+                    conn.close();
                 }
             }catch (SQLException ex){
                 throw new RuntimeException(ex);
@@ -60,10 +62,12 @@ public class IngressoRepository extends RepositoryDefault implements IRepository
 
     @Override
     public Ingresso findById(Long id) {
+        Connection conn = null;
         String sql = "SELECT * FROM ingressos WHERE id = ?";
 
         try{
-            PreparedStatement ps = this.conn.prepareStatement(sql);
+            conn = this.dataSource.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
             ps.setLong(1, id);
             ResultSet rs = ps.executeQuery();
 
@@ -82,8 +86,8 @@ public class IngressoRepository extends RepositoryDefault implements IRepository
             throw new RuntimeException(e);
         }finally {
             try{
-                if(this.conn != null && !this.conn.isClosed()){
-                    this.conn.close();
+                if(conn != null && !conn.isClosed()){
+                    conn.close();
                 }
             }catch (SQLException ex){
                 throw new RuntimeException(ex);
@@ -95,10 +99,12 @@ public class IngressoRepository extends RepositoryDefault implements IRepository
 
     @Override
     public Ingresso save(Ingresso entity) {
+        Connection conn = null;
         String sql = "INSERT INTO ingressos(nome_ingresso, disponivel, valor, evento_id) VALUES(?, ?, ?, ?)";
 
         try{
-            PreparedStatement ps = this.conn.prepareStatement(sql);
+            conn = this.dataSource.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, entity.getNomeIngresso());
             ps.setBoolean(2, entity.getDisponivel());
             ps.setBigDecimal(3, entity.getValor());
@@ -119,8 +125,8 @@ public class IngressoRepository extends RepositoryDefault implements IRepository
             throw new RuntimeException(e);
         }finally {
             try{
-                if(this.conn != null && !this.conn.isClosed()){
-                    this.conn.close();
+                if(conn != null && !conn.isClosed()){
+                    conn.close();
                 }
             }catch (SQLException ex){
                 throw new RuntimeException(ex);
@@ -130,10 +136,12 @@ public class IngressoRepository extends RepositoryDefault implements IRepository
 
     @Override
     public Ingresso update(Long id, Ingresso entityUpdated) {
+        Connection conn = null;
         String sql = "UPDATE ingressos SET nome_ingresso = ?, disponivel = ?, valor = ? WHERE id = ? ";
 
         try{
-            PreparedStatement ps = this.conn.prepareStatement(sql);
+            conn = this.dataSource.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, entityUpdated.getNomeIngresso());
             ps.setBoolean(2, entityUpdated.getDisponivel());
             ps.setBigDecimal(3, entityUpdated.getValor());
@@ -145,8 +153,8 @@ public class IngressoRepository extends RepositoryDefault implements IRepository
             throw new RuntimeException(e);
         }finally {
             try{
-                if(this.conn != null && !this.conn.isClosed()){
-                    this.conn.close();
+                if(conn != null && !conn.isClosed()){
+                    conn.close();
                 }
             }catch (SQLException ex){
                 throw new RuntimeException(ex);
@@ -158,10 +166,12 @@ public class IngressoRepository extends RepositoryDefault implements IRepository
 
     @Override
     public void deleteById(Long id) {
+        Connection conn = null;
         String sql = "DELETE FROM ingressos WHERE id = ?";
 
         try{
-            PreparedStatement ps = this.conn.prepareStatement(sql);
+            conn = this.dataSource.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
             ps.setLong(1, id);
 
             ps.execute();
@@ -170,8 +180,8 @@ public class IngressoRepository extends RepositoryDefault implements IRepository
             throw new RuntimeException(e);
         }finally {
             try{
-                if(this.conn != null && !this.conn.isClosed()){
-                    this.conn.close();
+                if(conn != null && !conn.isClosed()){
+                    conn.close();
                 }
             }catch (SQLException ex){
                 throw new RuntimeException(ex);
@@ -180,12 +190,13 @@ public class IngressoRepository extends RepositoryDefault implements IRepository
     }
 
     public List<Ingresso> getAllIngressosFromEventoId(Long id){
+        Connection conn = null;
         String sql = "SELECT * FROM ingressos WHERE evento_id = ?";
 
         try{
-
+            conn = this.dataSource.getConnection();
             Set<Ingresso> ingressos = new HashSet<>();
-            PreparedStatement ps = this.conn.prepareStatement(sql);
+            PreparedStatement ps = conn.prepareStatement(sql);
             ps.setLong(1, id);
 
             ResultSet rs = ps.executeQuery();
@@ -205,8 +216,8 @@ public class IngressoRepository extends RepositoryDefault implements IRepository
             throw new RuntimeException(e);
         }finally {
             try{
-                if(this.conn != null && !this.conn.isClosed()){
-                    this.conn.close();
+                if(conn != null && !conn.isClosed()){
+                    conn.close();
                 }
             }catch (SQLException e){
                 throw new RuntimeException(e);

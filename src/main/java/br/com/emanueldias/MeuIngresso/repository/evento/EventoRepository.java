@@ -18,11 +18,13 @@ public class EventoRepository extends RepositoryDefault implements IRepository<E
 
     @Override
     public Set<Evento> getAll() {
+        Connection conn = null;
         String sql = "SELECT * FROM eventos";
         Set<Evento> eventos = new HashSet<>();
 
         try {
-            PreparedStatement ps = this.conn.prepareStatement(sql);
+            conn = this.dataSource.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
@@ -47,8 +49,8 @@ public class EventoRepository extends RepositoryDefault implements IRepository<E
             throw new RuntimeException(e);
         } finally {
             try {
-                if (this.conn != null && !this.conn.isClosed()) {
-                    this.conn.close();
+                if (conn != null && !conn.isClosed()) {
+                    conn.close();
                 }
             } catch (SQLException ex) {
                 throw new RuntimeException(ex);
@@ -60,10 +62,12 @@ public class EventoRepository extends RepositoryDefault implements IRepository<E
 
     @Override
     public Evento findById(Long id) {
+        Connection conn = null;
         String sql = "SELECT * FROM eventos WHERE id = ?";
 
         try {
-            PreparedStatement ps = this.conn.prepareStatement(sql);
+            conn = this.dataSource.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
             ps.setLong(1, id);
 
             ResultSet rs = ps.executeQuery();
@@ -90,8 +94,8 @@ public class EventoRepository extends RepositoryDefault implements IRepository<E
             throw new RuntimeException(e);
         } finally {
             try {
-                if (this.conn != null && !this.conn.isClosed()) {
-                    this.conn.close();
+                if (conn != null && !conn.isClosed()) {
+                    conn.close();
                 }
             } catch (SQLException ex) {
                 throw new RuntimeException(ex);
@@ -103,10 +107,12 @@ public class EventoRepository extends RepositoryDefault implements IRepository<E
 
     @Override
     public Evento save(Evento entity) {
+        Connection conn = null;
         String sql = "INSERT INTO eventos(nome_evento, data, local, descricao, imagem, setores) VALUES(?, ?, ?, ?, ?, ?)";
 
         try {
-            PreparedStatement ps = this.conn.prepareStatement(sql);
+            conn = this.dataSource.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
 
             Array sqlArray = conn.createArrayOf("VARCHAR", entity.getSetores().toArray());
             ps.setString(1, entity.getNome());
@@ -131,8 +137,8 @@ public class EventoRepository extends RepositoryDefault implements IRepository<E
             throw new RuntimeException(e);
         } finally {
             try {
-                if (this.conn != null && !this.conn.isClosed()) {
-                    this.conn.close();
+                if (conn != null && !conn.isClosed()) {
+                    conn.close();
                 }
             } catch (SQLException ex) {
                 throw new RuntimeException(ex);
@@ -142,11 +148,12 @@ public class EventoRepository extends RepositoryDefault implements IRepository<E
 
     @Override
     public Evento update(Long id, Evento entityUpdated) {
+        Connection conn = null;
         String sql = "UPDATE eventos SET nome_evento = ?, data = ?, local = ?, descricao = ?, imagem = ?, setores = ? WHERE id = ?";
 
         try {
-
-            PreparedStatement ps = this.conn.prepareStatement(sql);
+            conn = this.dataSource.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
 
             Array sqlArray = conn.createArrayOf("VARCHAR", entityUpdated.getSetores().toArray());
             ps.setString(1, entityUpdated.getNome());
@@ -163,8 +170,8 @@ public class EventoRepository extends RepositoryDefault implements IRepository<E
             throw new RuntimeException(e);
         } finally {
             try {
-                if (this.conn != null && !this.conn.isClosed()) {
-                    this.conn.close();
+                if (conn != null && !conn.isClosed()) {
+                    conn.close();
                 }
             } catch (SQLException ex) {
                 throw new RuntimeException(ex);
@@ -176,10 +183,12 @@ public class EventoRepository extends RepositoryDefault implements IRepository<E
 
     @Override
     public void deleteById(Long id) {
+        Connection conn = null;
         String sql = "DELETE FROM eventos WHERE id = ?";
 
         try {
-            PreparedStatement ps = this.conn.prepareStatement(sql);
+            conn = this.dataSource.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
             ps.setLong(1, id);
 
             ps.execute();
@@ -188,8 +197,8 @@ public class EventoRepository extends RepositoryDefault implements IRepository<E
             throw new RuntimeException(e);
         } finally {
             try {
-                if (this.conn != null && !this.conn.isClosed()) {
-                    this.conn.close();
+                if (conn != null && !conn.isClosed()) {
+                    conn.close();
                 }
             } catch (SQLException ex) {
                 throw new RuntimeException(ex);
