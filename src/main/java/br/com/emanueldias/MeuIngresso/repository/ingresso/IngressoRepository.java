@@ -108,11 +108,11 @@ public class IngressoRepository extends RepositoryDefault implements IRepository
             ps.setLong(4, entity.getEventoId());
 
             ps.execute();
-            ps.close();
 
             try (ResultSet rs = ps.getGeneratedKeys()) {
                 if (rs.next()) {
                     long id = rs.getLong(1);
+                    ps.close();
                     return this.findById(id);
                 } else {
                     throw new SQLException();
@@ -186,13 +186,12 @@ public class IngressoRepository extends RepositoryDefault implements IRepository
         }
     }
 
-    public List<Ingresso> getAllIngressosFromEventoId(Long id){
+    public Set<Ingresso> getAllIngressosFromEventoId(Long id){
         Connection conn = null;
         String sql = "SELECT * FROM ingressos WHERE evento_id = ?";
-
+        Set<Ingresso> ingressos = new HashSet<>();
         try{
             conn = this.dataSource.getConnection();
-            Set<Ingresso> ingressos = new HashSet<>();
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setLong(1, id);
 
@@ -221,6 +220,6 @@ public class IngressoRepository extends RepositoryDefault implements IRepository
             }
         }
 
-        return null;
+        return ingressos;
     }
 }
